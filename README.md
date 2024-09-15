@@ -8,6 +8,22 @@ I needed a tool to make GraphQL queries and manipulate the data in a way that wa
 
 I use this instead a GUI applicaiton while I'm developing and testing GraphQL queries.
 
+## Installation
+
+Install Go on your machine and run the following command:
+
+Clone this repository and run the following command:
+
+```bash
+go build .
+```
+
+This will create a binary file called gqlcli. You can move this file to a directory in your PATH to make it accessible from anywhere.
+
+```bash
+mv gqlcli /usr/local/bin
+```
+
 ## Usage
 
 You have to create two types of files
