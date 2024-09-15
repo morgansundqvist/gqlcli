@@ -10,7 +10,7 @@ I use this instead a GUI applicaiton while I'm developing and testing GraphQL qu
 
 ## Installation
 
-Install Go on your machine and run the following command:
+Install Go on your machine.
 
 Clone this repository and run the following command:
 
