@@ -1,0 +1,21 @@
+mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    me {
+      id
+      companies {
+        id
+        name
+        numberOfCompanyOpenTasks
+        numberOfFirmOpenTasks
+        firm {
+          id
+        }
+      }
+      firms {
+        id
+        name
+      }
+    }
+    token
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "graphql_file": "graphql/login.graphql",
+  "variables": {
+    "email": "{{ .email }}",
+    "password": "{{ .password }}"
+  },
+  "headers": {},
+  "output": {
+    "token": "data.login.token",
+    "companyId": "data.login.me.companies[name = \"Morgans Företag AB\"].id"
+  },
+  "graphql_url": "http://localhost:8086/query"
+}

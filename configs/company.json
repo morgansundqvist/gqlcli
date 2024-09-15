@@ -1,0 +1,13 @@
+{
+  "graphql_file": "graphql/company.graphql",
+  "variables": {
+    "id": "{{ .companyId }}"
+  },
+  "headers": {
+    "Authorization": "Bearer {{ .token }}"
+  },
+  "output": {
+    "companyName": "data.company.name"
+  },
+  "graphql_url": "http://localhost:8086/query"
+}
