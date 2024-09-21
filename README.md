@@ -45,6 +45,24 @@ As the variables in login.json does not exist in the context, you will be prompt
 
 This will first login, store a company filtered by JSONATA and store the JWT token in the context. Then it will use the JWT token and companyId to query the company details.
 
+The CLI will also look for environment variables in the format `GQLCLI_<VARIABLE_NAME>`. If it finds any, it will use these values instead of prompting the user.
+
+```bash
+GQLCLI_USERNAME="email" gqlcli configs/login.json configs/company.json
+```
+
+If you only want to output certain data from the context, you can use the `-o` flag.
+
+```bash
+gqlcli -o companyId configs/login.json
+```
+
+If you want timing information, you can use the `-t` flag.
+
+```bash
+gqlcli -t configs/login.json
+```
+
 ## License
 
 MIT
