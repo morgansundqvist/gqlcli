@@ -93,6 +93,16 @@ func ParseVariables(vars map[string]string, ctx *executioncontext.ExecutionConte
 		parsedVars[key] = buf.String()
 
 	}
+
+	//iterate over paresdVars and check environment variables prefixed with GQLCLI_ and replace the value if the value is ""
+	for key, val := range parsedVars {
+		if val == "" {
+			envVar := os.Getenv("GQLCLI_" + key)
+			if envVar != "" {
+				parsedVars[key] = envVar
+			}
+		}
+	}
 	return parsedVars, nil
 }
 
@@ -124,8 +134,6 @@ func StoreOutputInContextJSONATA(outputConfig map[string]string, data map[string
 		}
 
 		ctx.Set(key, res)
-		fmt.Println("Output:")
-		fmt.Printf("Key: %s, Value: %v\n", key, res)
 	}
 	return nil
 }
@@ -145,4 +153,59 @@ func ParseHeaders(headers map[string]string, ctx *executioncontext.ExecutionCont
 		parsedHeaders[key] = buf.String()
 	}
 	return parsedHeaders, nil
+}
+
+func PrintContext(ctx *executioncontext.ExecutionContext, outputFields []string) {
+	println("")
+	if len(outputFields) == 0 {
+		for key, val := range ctx.Vars {
+			fmt.Printf("%s: %v\n", key, val)
+		}
+	} else {
+		for _, field := range outputFields {
+			val := ctx.Get(field)
+			fmt.Printf("%s: %v\n", field, val)
+		}
+	}
+}
+
+type InputVariables struct {
+	OutputFields []string
+	InputFiles   []string
+	DoTiming     bool
+}
+
+func ParseInput() (*InputVariables, error) {
+	var outputFields []string
+	var inputFiles []string
+	var doTiming = false
+
+	args := os.Args[1:]
+	for i := 0; i < len(args); i++ {
+		arg := args[i]
+		if arg == "-o" && i+1 < len(args) {
+
+			outputFields = append(outputFields, args[i+1])
+			i++
+		} else if arg == "-t" {
+			//do timing
+			//set the doTiming flag to true
+			doTiming = true
+		} else {
+
+			inputFiles = append(inputFiles, arg)
+		}
+	}
+
+	if len(inputFiles) == 0 {
+		return nil, fmt.Errorf("no input files provided")
+	}
+
+	returnVariable := &InputVariables{
+		OutputFields: outputFields,
+		InputFiles:   inputFiles,
+		DoTiming:     doTiming,
+	}
+
+	return returnVariable, nil
 }

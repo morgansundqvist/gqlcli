@@ -1,8 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"os"
+	"time"
 
 	"github.com/morgansundqvist/gqlcli/pkg/executioncontext"
 	"github.com/morgansundqvist/gqlcli/pkg/executor"
@@ -11,12 +12,23 @@ import (
 
 func main() {
 	ctx := executioncontext.NewExecutionContext()
-	args := os.Args[1:]
 
-	for _, arg := range args {
-		config, err := utils.LoadConfig(arg)
+	// Parse input
+	inputVariables, err := utils.ParseInput()
+	if err != nil {
+		//print usage
+		fmt.Println("Usage: gqlcli [-o output_field] input_file1 [input_file2 ...]")
+		return
+	}
+
+	//setup variables for starttime to print out the time taken to execute the queries
+	startTime := time.Now()
+
+	// Execute GraphQL operations for each input file
+	for _, inputFile := range inputVariables.InputFiles {
+		config, err := utils.LoadConfig(inputFile)
 		if err != nil {
-			log.Fatalf("Failed to load config %s: %v", arg, err)
+			log.Fatalf("Failed to load config %s: %v", inputFile, err)
 		}
 
 		query, err := utils.LoadGraphQLQuery(config.GraphQLFile)
@@ -54,5 +66,12 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to store output in context: %v", err)
 		}
+	}
+
+	// Print context
+	utils.PrintContext(ctx, inputVariables.OutputFields)
+	endTime := time.Now()
+	if inputVariables.DoTiming {
+		fmt.Println("Time taken to execute the queries: ", endTime.Sub(startTime))
 	}
 }
